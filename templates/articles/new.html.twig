@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Articles{% endblock %}
+
+{% block main %}
+    <h2>Ajoutez un article</h2>
+    <div class="text-center">
+        <a href="{{ path('app_home') }}" class="btn btn-info">Voir tout les articles</a>
+    
+    </div>
+    {{ include('articles/_form.html.twig') }}
+
+
+{% endblock %}

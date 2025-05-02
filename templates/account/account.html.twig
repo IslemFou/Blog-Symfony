@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AccountController!{% endblock %}
+
+{% block main %}
+
+<h2>Votre profil</h2>
+
+{% if profil is empty %}
+    <div class="text-center">
+        <a href="{{path('app_profils_new')}}" class="btn btn-warning ">Alimenter votre profil</a>
+    </div>
+{% else %}
+
+    <table class="table mt-5">
+        <thead>
+            <tr>
+                <th>firstName</th>
+                <th>lastName</th>
+                <th>email</th>
+                <th>Picture</th>
+                <th>Description</th>
+                <th>DateBirth</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                {# {{ dump(profil) }} #}
+
+                <td>{{ app.user.firstName}}</td>
+                <td>{{ app.user.lastName}}</td>
+                <td>{{ app.user.email}}</td>
+            
+                {% for data in profil %}
+                    <td> <img src="{{asset('images/profils/' ~ data.picture)}}" alt="Image de profil" class="img-fluid"> </td>
+                    <td>{{data.description|slice(0,100) ~ "..."}}</td>
+                    <td>{{data.dateBirth|date('d-m-Y')}}</td>
+                    <td>
+                        <a href="{{path('app_profils_edit', {'id': data.id})}}" class="btn btn-warning mb-5">Modifier</a>
+                        <form method="post" action="{{ path('app_profils_delete', {'id': data.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ data.id) }}">
+                            <button class="btn btn-warning">Supprimer</button>
+                        </form>
+                       
+                    </td>
+                   
+                {% endfor %}
+               
+            
+            </tr>
+
+        </tbody>
+    </table>
+
+   
+    
+{% endif %}
+
+
+{% endblock %}

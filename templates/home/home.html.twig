@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HomeController!{% endblock %}
+
+{% block main %}
+
+    {#
+            {{.........}} permet l’affichage d’une expression.
+            {% .... %} permet d’exécuter une action (une boucle, une condition...)
+            {#.......#} {# permet d’écrire des commentaires
+
+        #}
+
+    <div class="text-center my-5">
+        <h2>{{title}}</h2>
+    </div>
+
+     {% if article is defined %}
+    
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Id</th>
+                    <td>{{ article.id }}</td>
+                </tr>
+                <tr>
+                    <th>Title</th>
+                    <td>{{ article.title }}</td>
+                </tr>
+                <tr>
+                    <th>Content</th>
+                    <td>{{ article.content }}</td>
+                </tr>
+                <tr>
+                    <th>Image</th>
+                    <td> <img src="{{asset("images/articles/" ~ article.image )}}"  alt="Image de l'article" ></td>
+                </tr>
+                <tr>
+                    <th>CreatedAt</th>
+                    <td>{{ article.createdAt ? article.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                </tr>
+                <tr>
+                    <th>UpdatedAt</th>
+                    <td>{{ article.updatedAt ? article.updatedAt|date('Y-m-d H:i:s') : 'Pas modifié' }}</td>
+                </tr>
+            </tbody>
+        </table>
+        
+
+     {% else %}
+    <div class="row my-5">
+        {% for article in articles %}
+            
+    
+            <div class="col-sm-4 m-auto">
+                <div class="card mb-3">
+                    <img src="{{asset("images/articles/" ~ article.image )}}" class="card-img-top h-auto" alt="" >
+                    <div class="card-body">
+                        <h5 class="card-title">{{article.title}}</h5>
+                        <p class="card-text">{{article.content}}</p>
+                        <h6 class="card-text"> Article créé le : <small class="text-body-secondary">{{article.createdAt | date("d-m-Y")}}</small></h6>
+                        <a href="{{path('app_one_article', {'id' : article.id})}}" class="btn btn-success">Voir l'article</a>
+                    </div>
+                </div>
+            </div>  
+
+        
+        {% endfor %}
+
+
+        {% if limit is defined and articles|length <= limit %}
+        <div class="text-center my-3">
+            <a href="{{ path('app_home_all') }}" class="btn btn-primary">Voir tous les articles</a>
+        </div>
+        {% endif %}
+
+    </div>
+
+
+
+
+    {% endif %}
+{% endblock %}
