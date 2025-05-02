@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Articles;
 use App\Form\ArticlesType;
 use App\Repository\ArticlesRepository;
+use App\Repository\CategoriesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,17 +18,20 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 final class ArticlesController extends AbstractController
 {
     #[Route(name: 'app_my_articles', methods: ['GET'])]
-    public function index(ArticlesRepository $articlesRepository): Response
+    public function index(ArticlesRepository $articlesRepository, CategoriesRepository $categoriesRepository): Response
     {
 
         $user = $this->getUser(); // recuperation de l'utilisateur connecté
+        $categories = $categoriesRepository->findAll();
         return $this->render('articles/index.html.twig', [
             'articles' => $articlesRepository->findByUser($user),
+            'categories' => $categories, ////////
+
         ]);
     }
 
     #[Route('/new', name: 'app_articles_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger, CategoriesRepository $categoriesRepository): Response
     {
         $article = new Articles();
         $form = $this->createForm(ArticlesType::class, $article);
@@ -79,22 +83,28 @@ final class ArticlesController extends AbstractController
             return $this->redirectToRoute('app_my_articles', [], Response::HTTP_SEE_OTHER);
         }
 
+        $categories = $categoriesRepository->findAll(); // On utilise la méthode findAll() du repository pour récupérer les catégories de la base de données
         return $this->render('articles/new.html.twig', [
             'article' => $article,
             'form' => $form,
+            'categories' => $categories, // On utilise la méthode findAll() du repository pour récupérer les catégories de la base de données
         ]);
     }
 
     #[Route('/{id}', name: 'app_articles_show', methods: ['GET'])]
-    public function show(Articles $article): Response
+    public function show(Articles $article, CategoriesRepository $categoriesRepository): Response
     {
+        $categories = $categoriesRepository->findAll(); // On utilise la méthode findAll() du repository pour récupérer les catégories de la base de données
+
         return $this->render('articles/show.html.twig', [
             'article' => $article,
+            'categories' => $categories, // On utilise la méthode findAll() du repository pour récupérer les catégories de la base de données
+
         ]);
     }
 
     #[Route('/{id}/edit', name: 'app_articles_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Articles $article, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+    public function edit(Request $request, Articles $article, EntityManagerInterface $entityManager, SluggerInterface $slugger, CategoriesRepository $categoriesRepository): Response
     {
         $form = $this->createForm(ArticlesType::class, $article);
         $form->handleRequest($request);
@@ -145,10 +155,12 @@ final class ArticlesController extends AbstractController
 
             return $this->redirectToRoute('app_articles_show', ['id' => $idArticle], Response::HTTP_SEE_OTHER);
         }
+        $categories = $categoriesRepository->findAll(); // On utilise la méthode findAll() du repository pour récupérer les catégories de la base de données
 
         return $this->render('articles/edit.html.twig', [
             'article' => $article,
             'form' => $form,
+            'categories' => $categories, // On utilise la méthode findAll() du repository pour récupérer les catégories de la base de données
 
         ]);
     }

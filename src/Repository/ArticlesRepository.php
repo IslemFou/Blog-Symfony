@@ -31,6 +31,18 @@ class ArticlesRepository extends ServiceEntityRepository
         ;
     }
 
+
+    public function findByCategory(int $idCategory): array
+    {
+        return $this->createQueryBuilder('a')
+            ->join('a.category', 'c') // On joint la table categories
+            ->andWhere('c.id = :cayegoryId') // On filtre les articles par la catégorie 
+            ->setParameter(':cayegoryId', $idCategory) //elle fait la sécurité de la requête 
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     //    public function findOneBySomeField($value): ?Articles
     //    {
     //        return $this->createQueryBuilder('a')

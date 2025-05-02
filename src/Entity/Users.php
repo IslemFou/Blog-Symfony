@@ -51,10 +51,9 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->article = new ArrayCollection();
-       
     }
 
-    public function __toString() : string
+    public function __toString(): string
     {
         return $this->email;
     }
@@ -204,5 +203,4 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
 }

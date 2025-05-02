@@ -29,6 +29,8 @@
                 </button>
                 <div class="collapse navbar-collapse w-100 d-flex justify-content-end" id="navbarNavAltMarkup">
                     <ul class="navbar-nav">
+                        {% if app.user %} 
+
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
@@ -36,7 +38,7 @@
                             </a>
                             <ul class="dropdown-menu w-25" aria-labelledby="navbarDropdown">
                         {% for category in categories %}
-                                <li><a href="" class="nav-link ps-2 text-white">
+                                <li><a href="{{path("app_category_articles",{'id':category.id})}}" class="nav-link ps-2 text-white">
                                 {{ category.name }}
                                 </a></li>
                         {% endfor %}
@@ -46,7 +48,6 @@
 
 
                         {# {{ dump(app.user.roles) }} #}
-                        {% if app.user %} 
                         {# Si l'utilisateur est connecté #}
 
                         {# 1ére façon de faire : on utilise une boucle sur app.user.roles ( un tableau dans lequel on a les rôles attribués à l'utilisateur) #}

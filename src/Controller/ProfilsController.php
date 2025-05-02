@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Profils;
 use App\Form\ProfilsType;
+use App\Repository\CategoriesRepository;
 use App\Repository\ProfilsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,18 +17,20 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 final class ProfilsController extends AbstractController
 {
     #[Route(name: 'app_profils_index', methods: ['GET'])]
-    public function index(ProfilsRepository $profilsRepository): Response
+    public function index(ProfilsRepository $profilsRepository, CategoriesRepository $categoriesRepository): Response ///////////
     {
 
         $user = $this->getUser();
+        $categories = $categoriesRepository->findAll(); ////////
         return $this->render('account/account.html.twig', [
             'profil' => $profilsRepository->findByUser($user),
+            'categories' => $categories, ////////
 
         ]);
     }
 
     #[Route('/new', name: 'app_profils_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger, CategoriesRepository $categoriesRepository): Response
     {
         $profil = new Profils();
         $form = $this->createForm(ProfilsType::class, $profil);
@@ -60,9 +63,12 @@ final class ProfilsController extends AbstractController
             return $this->redirectToRoute('app_profils_index', [], Response::HTTP_SEE_OTHER);
         }
 
+        $categories = $categoriesRepository->findAll(); ////////
+
         return $this->render('profils/new.html.twig', [
             'profil' => $profil,
             'form' => $form,
+            'categories' => $categories, ////////
         ]);
     }
 
@@ -75,7 +81,7 @@ final class ProfilsController extends AbstractController
     // }
 
     #[Route('/{id}/edit', name: 'app_profils_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Profils $profil, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+    public function edit(Request $request, Profils $profil, EntityManagerInterface $entityManager, SluggerInterface $slugger, CategoriesRepository $categoriesRepository): Response
     {
 
         if ($profil->getId() !== $this->getUser()->getProfil()->getId()) {
@@ -110,10 +116,11 @@ final class ProfilsController extends AbstractController
 
             return $this->redirectToRoute('app_profils_index', [], Response::HTTP_SEE_OTHER);
         }
-
+        $categories = $categoriesRepository->findAll(); ////////
         return $this->render('profils/edit.html.twig', [
             'profil' => $profil,
             'form' => $form,
+            'categories' => $categories, ////////
         ]);
     }
 

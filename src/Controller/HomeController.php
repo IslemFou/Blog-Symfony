@@ -34,7 +34,7 @@ final class HomeController extends AbstractController
     }
 
     #[Route('/allArticles', name: 'app_home_all')]
-    public function allArticles(ArticlesRepository $articlesRepository): Response
+    public function allArticles(ArticlesRepository $articlesRepository, CategoriesRepository $categoriesRepository, $id): Response
     {
         // On va chercher tous les articles de la base de données
         $articles = $articlesRepository->findAll();
@@ -47,17 +47,29 @@ final class HomeController extends AbstractController
     }
 
     //
-    #[Route('/{id}', name: 'app_one_article')]
-    public function showArticle(ArticlesRepository $articlesRepository, $id): Response
+    #[Route('/article/{id}', name: 'app_one_article')]
+    public function showArticle(ArticlesRepository $articlesRepository, CategoriesRepository $categoriesRepository, $id): Response
     {
         //$idArticle = $articlesRepository->find();
         // On va chercher tous les articles de la base de données
         $article = $articlesRepository->findOneBy(['id' => $id]);
-
         $title = $article->getTitle(); // On utilise la méthode findRecentsAticles() du repository pour récupérer les articles récents
+
         return $this->render('home/home.html.twig', [
             'article' => $article,
             'title' => 'Article : ' . $title,
+        ]);
+    }
+
+    #[Route('/category/{id}', name: 'app_category_articles')]
+    public function showArticleByCategory(ArticlesRepository $articlesRepository, $id, CategoriesRepository $categoriesRepository): Response
+    {
+        $categories = $categoriesRepository->findOneById($id); // On utilise la méthode findAll() du repository pour récupérer les catégories de la base de données
+
+        dd($categories);
+        return $this->render('home/home.html.twig', [
+            'title' => 'Nos articles',
+            'categories' => $categories,
         ]);
     }
 }
